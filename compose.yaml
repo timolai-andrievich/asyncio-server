@@ -1,0 +1,11 @@
+services:
+  server:
+    build: ./
+    command: poetry run python server/server.py
+    environment:
+      HOST: "0.0.0.0"
+      PORT: 8080
+  client:
+    build: ./
+    command: poetry run python client/client.py
+
