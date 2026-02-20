@@ -5,7 +5,44 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: 8080
-  client:
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./server
+          target: /app/server
+    volumes:
+      - ./logs/server/:/var/log/
+
+  client-1:
     build: ./
     command: poetry run python client/client.py
+    environment:
+      HOST: "server"
+      PORT: 8080
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./client
+          target: /app/client
+    depends_on:
+      server:
+        condition: service_started
+    volumes:
+      - ./logs/client-1/:/var/log/
 
+  client-2:
+    build: ./
+    command: poetry run python client/client.py
+    environment:
+      HOST: "server"
+      PORT: 8080
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./client
+          target: /app/client
+    depends_on:
+      server:
+        condition: service_started
+    volumes:
+      - ./logs/client-2/:/var/log/
